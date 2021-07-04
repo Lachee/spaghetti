@@ -1,3 +1,8 @@
+// References:
+// - initial reference: https://www.geeks3d.com/hacklab/20180611/demo-simple-2d-grid-in-glsl/
+// - shader: https://thebookofshaders.com/edit.php#10/ikeda-simple-grid.frag
+// - book: https://thebookofshaders.com/09/
+
 //vert:
 attribute vec4 a_Vertex;	//position
 
