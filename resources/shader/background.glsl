@@ -25,9 +25,17 @@ float grid(vec2 st, float res) {
 void main(void) {
     float scale = 10.0;
     float resolution = 0.1;
+    vec3 colour = vec3(0.25, 0.25, 0.25);
+
+    // Scale the colours a bit for the other quads
+    if (v_uv.y < 0.0)
+        colour.g = 0.0;
+    if (v_uv.x < 0.0)
+        colour.r = 0.0;
+
 
     vec2 grid_uv = v_uv.xy * scale; // scale
     float x = grid(grid_uv, resolution); // resolution
-    gl_FragColor.rgb = vec3(x, x, x);
+    gl_FragColor.rgb = colour * x;
     gl_FragColor.a = 1.0;
 }

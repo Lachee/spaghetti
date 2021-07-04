@@ -28,12 +28,33 @@ func createBackground() (*Background, error) {
 
 	// Set the vertex data
 	vertices := []Vector3{
+		n.NewVector3(-0, 0, 0),
+		n.NewVector3(-1, 0, 0),
+		n.NewVector3(-0, 1, 0),
+		n.NewVector3(-1, 1, 0),
+		n.NewVector3(-0, 1, 0),
+		n.NewVector3(-1, 0, 0),
+
 		n.NewVector3(0, 0, 0),
 		n.NewVector3(1, 0, 0),
 		n.NewVector3(0, 1, 0),
 		n.NewVector3(1, 1, 0),
 		n.NewVector3(0, 1, 0),
 		n.NewVector3(1, 0, 0),
+
+		n.NewVector3(0, -0, 0),
+		n.NewVector3(1, -0, 0),
+		n.NewVector3(0, -1, 0),
+		n.NewVector3(1, -1, 0),
+		n.NewVector3(0, -1, 0),
+		n.NewVector3(1, -0, 0),
+
+		n.NewVector3(-0, -0, 0),
+		n.NewVector3(-1, -0, 0),
+		n.NewVector3(-0, -1, 0),
+		n.NewVector3(-1, -1, 0),
+		n.NewVector3(-0, -1, 0),
+		n.NewVector3(-1, -0, 0),
 	}
 	GL.BindBuffer(n.GlArrayBuffer, bg.vertexBuffer)
 	GL.BufferData(n.GlArrayBuffer, vertices, n.GlStaticDraw)
@@ -58,5 +79,5 @@ func (bg *Background) Draw() {
 	GL.Uniform2fv(bg.u_Resolution, []float32{GL.BoundingBox().Width, GL.BoundingBox().Height})
 
 	// Draw the element
-	GL.DrawArrays(n.GlTriangles, 0, 6)
+	GL.DrawArrays(n.GlTriangles, 0, 6*4)
 }
