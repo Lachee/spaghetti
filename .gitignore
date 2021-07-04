@@ -12,4 +12,13 @@
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
+node_modules/
+
+# This file is auto-built, so no include
+/resources/spaghetti.js
+
+# Temporary files for development. Yall aint suppose to see thsi anyways
+/resources/shader/old/
+/resources/textures/
+/resources/fonts/
