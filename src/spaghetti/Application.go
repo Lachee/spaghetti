@@ -63,7 +63,7 @@ func (app *Application) Update(dt float32) {
 	// Camera Movement
 	axis := n.Input().GetAxis2D(n.KeyA, n.KeyD, n.KeyW, n.KeyS)
 	cameraPosition = cameraPosition.Add(axis.Scale(dt).ToVector3())
-	log.Println("Camera Position", cameraPosition, axis)
+	//log.Println("Camera Position", cameraPosition, axis)
 }
 
 var (

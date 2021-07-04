@@ -18,6 +18,8 @@ export class Editor {
     constructor(options = {}) {
         this.container = options.container ?? document.body;
         this.#instance = _editor_instances;
+
+        this.#injectGlobals();
     }
 
     /**
@@ -31,16 +33,32 @@ export class Editor {
 		const go = new Go();
         let result = null;
         if (typeof(wasm) === 'string') {
-            console.log('streaming assembly from ', wasm);
+            this.log('streaming assembly from ', wasm);
             result = await WebAssembly.instantiateStreaming(fetch(wasm), go.importObject);
         } else {
-            console.log('loading raw assembly byes');
+            this.log('loading raw assembly byes');
             result = await WebAssembly.instantiate(wasm, go.importObject);
         }
 
         //Run the module
         go.argv = [ `.spaghetti-instance-${this.#instance}` ];
         await go.run(result.instance);
+    }
+
+    /** injects our own runner to the import objects */
+    #injectGlobals() {
+        const decoder = new TextDecoder("utf-8");
+        let outputBuffer = "";
+
+        fs.writeSync = (fd, buf) => {
+            outputBuffer += decoder.decode(buf);
+            const nl = outputBuffer.lastIndexOf("\n");
+            if (nl != -1) {
+                this.log(outputBuffer.substr(0, nl));
+                outputBuffer = outputBuffer.substr(nl + 1);
+            }
+            return buf.length;
+        }
     }
 
     #createCanvas() {
@@ -51,5 +69,9 @@ export class Editor {
         this.canvas.classList.add(`spaghetti-instance-${this.#instance}`);
         this.canvas.setAttribute('oncontextmenu', 'return false;');
         return this.canvas;
+    }
+
+    log(message, ...params) {
+        console.log('[spaghetti]', message, ...params);
     }
 }
