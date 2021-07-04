@@ -50,8 +50,8 @@
 
 		//Run the editor
 		console.log('starting editor...')
-		editor.run().then(() => {
-			console.log('editor exited.');
+		editor.run().then((code) => {
+			console.log('editor exited: ', code);
 		});
 	</script>
 </body>
