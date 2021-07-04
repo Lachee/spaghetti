@@ -7,6 +7,7 @@ type Background struct {
 	vertexBuffer n.WebGLBuffer
 	a_Vertex     n.WebGLAttributeLocation
 	u_Projection n.WebGLUniformLocation
+	u_Resolution n.WebGLUniformLocation
 }
 
 func createBackground() (*Background, error) {
@@ -23,6 +24,7 @@ func createBackground() (*Background, error) {
 	bg.vertexBuffer = GL.CreateBuffer()
 	bg.a_Vertex = bg.shader.GetAttribLocation("a_Vertex")
 	bg.u_Projection = bg.shader.GetUniformLocation("u_Projection")
+	bg.u_Resolution = bg.shader.GetUniformLocation("u_Resolution")
 
 	// Set the vertex data
 	vertices := []Vector3{
@@ -30,6 +32,8 @@ func createBackground() (*Background, error) {
 		n.NewVector3(1, 0, 0),
 		n.NewVector3(0, 1, 0),
 		n.NewVector3(1, 1, 0),
+		n.NewVector3(0, 1, 0),
+		n.NewVector3(1, 0, 0),
 	}
 	GL.BindBuffer(n.GlArrayBuffer, bg.vertexBuffer)
 	GL.BufferData(n.GlArrayBuffer, vertices, n.GlStaticDraw)
@@ -51,7 +55,8 @@ func (bg *Background) Draw() {
 	// Set the projection
 	projection := getProjection()
 	GL.UniformMatrix4fv(bg.u_Projection, projection)
+	GL.Uniform2fv(bg.u_Resolution, []float32{GL.BoundingBox().Width, GL.BoundingBox().Height})
 
 	// Draw the element
-	GL.DrawArrays(n.GlTriangles, 0, 4)
+	GL.DrawArrays(n.GlTriangles, 0, 6)
 }

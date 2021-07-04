@@ -88,27 +88,37 @@ func (app *Application) Render() {
 	// Clear the canvas
 	n.GL.ClearColor(n.White)
 	n.GL.Clear(n.GlColorBufferBit | n.GlDepthBufferBit)
-
 	app.bg.Draw()
 
-	/*
-		var x float32 = 0
-		var y float32 = 0
+	var x float32 = 0
+	var y float32 = 0
 
-		mesh := []Vector3{
-			n.NewVector3(x+0, y+0, 0),
-			n.NewVector3(x+1, y+0, 0),
-			n.NewVector3(x+0, y+1, 0),
-			n.NewVector3(x+1, y+1, 0),
-		}
+	boundingBox := n.GL.BoundingBox()
+	mousePosition := n.Input().GetMousePosition()
+	mp4 := Vector4{
+		X: (mousePosition.X / (boundingBox.Width / 2)) - 1,
+		Y: ((boundingBox.Height - mousePosition.Y) / (boundingBox.Height / 2)) - 1,
+		Z: 0,
+		W: 1,
+	}
+	mp4 = getProjection().Inverse().MultiplyVector4(mp4)
+	x = mp4.X
+	y = mp4.Y
 
-		indecies := []uint16{
-			0, 1, 2,
-			2, 1, 3,
-		}
+	mesh := []Vector3{
+		n.NewVector3(x+0, y+0, 0),
+		n.NewVector3(x+1, y+0, 0),
+		n.NewVector3(x+0, y+1, 0),
+		n.NewVector3(x+1, y+1, 0),
+	}
 
-		app.DrawMesh(mesh, indecies)
-	*/
+	indecies := []uint16{
+		0, 1, 2,
+		2, 1, 3,
+	}
+
+	n.GL.Clear(n.GlDepthBufferBit)
+	app.DrawMesh(mesh, indecies)
 
 }
 

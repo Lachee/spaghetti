@@ -24,6 +24,8 @@ github.com/lachee/noodle v0.0.0-20210704063537-404e6a1cb800 h1:oFO3MGSAjMXlo6sRd
 github.com/lachee/noodle v0.0.0-20210704063537-404e6a1cb800/go.mod h1:C51O3zyzBtbm0YNES+K1WGWPzvx/OfAlBCGgRZuWdGA=
 github.com/lachee/noodle v0.0.0-20210704092006-3033810f95c2 h1:qnajQjfHi43duSJnLX/lTwnn012hRR2mXrvHH3GwG6Q=
 github.com/lachee/noodle v0.0.0-20210704092006-3033810f95c2/go.mod h1:C51O3zyzBtbm0YNES+K1WGWPzvx/OfAlBCGgRZuWdGA=
+github.com/lachee/noodle v0.0.0-20210704142043-2a6908e26a66 h1:IvCk3/5nb6H5bIRFfWAc7I3Kd6dkiSqiaMqkdPKu7yI=
+github.com/lachee/noodle v0.0.0-20210704142043-2a6908e26a66/go.mod h1:C51O3zyzBtbm0YNES+K1WGWPzvx/OfAlBCGgRZuWdGA=
 golang.org/x/image v0.0.0-20210504121937-7319ad40d33e/go.mod h1:FeLwcggjj3mMvU+oOTbSwawSJRM1uh48EjtB4UJZlP0=
 golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d h1:RNPAfi2nHY7C2srAV8A49jpsYr0ADedCk1wq6fTMTvs=
 golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d/go.mod h1:023OzeP/+EPmXeapQh35lcL3II3LrY8Ic+EFFKVhULM=

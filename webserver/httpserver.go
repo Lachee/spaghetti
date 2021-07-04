@@ -53,7 +53,7 @@ func watchFiles() {
 
 			now := time.Now()
 			diff := now.Sub(lastTime)
-			if diff.Milliseconds() >= 10000 {
+			if diff.Milliseconds() >= 5000 {
 				if event.Op&fsnotify.Write == fsnotify.Write {
 					absFile, _ := filepath.Abs(event.Name)
 					absFile = strings.Replace(absFile, "\\", "/", -1)
