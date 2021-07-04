@@ -10,12 +10,22 @@ import (
 var cursorSize = Vector2{1, 1}
 var cursorHotspot = Vector2{-1, -3}
 
+var (
+	GL *n.WebGL
+)
+
 //Application handles the game. Put your variables in here
 type Application struct {
 	shader *n.Shader
+	bg     *Background
 }
 
 func CursorVisibility(visbility bool) {
+}
+
+//EnableDebugger will set flags for debugging purposes
+func (app *Application) EnableDebugger() {
+
 }
 
 //Start allows for setup
@@ -24,6 +34,15 @@ func (app *Application) Start() bool {
 	app.shader = testShader
 	pixelScale = 100
 	app.CreateRenderer()
+
+	// Create the background
+	bg, err := createBackground()
+	app.bg = bg
+	if err != nil {
+		n.Error("Failed to create the background", err)
+		return false
+	}
+
 	return true
 }
 
@@ -61,28 +80,35 @@ var (
 //Render draws the frame
 func (app *Application) Render() {
 
+	// Assign the GL shortcut
+	GL = n.GL
+
 	n.DebugDraw = true
 
 	// Clear the canvas
 	n.GL.ClearColor(n.White)
 	n.GL.Clear(n.GlColorBufferBit | n.GlDepthBufferBit)
 
-	var x float32 = 0
-	var y float32 = 0
+	app.bg.Draw()
 
-	mesh := []Vector3{
-		n.NewVector3(x+0, y+0, 0),
-		n.NewVector3(x+1, y+0, 0),
-		n.NewVector3(x+0, y+1, 0),
-		n.NewVector3(x+1, y+1, 0),
-	}
+	/*
+		var x float32 = 0
+		var y float32 = 0
 
-	indecies := []uint16{
-		0, 1, 2,
-		2, 1, 3,
-	}
+		mesh := []Vector3{
+			n.NewVector3(x+0, y+0, 0),
+			n.NewVector3(x+1, y+0, 0),
+			n.NewVector3(x+0, y+1, 0),
+			n.NewVector3(x+1, y+1, 0),
+		}
 
-	app.DrawMesh(mesh, indecies)
+		indecies := []uint16{
+			0, 1, 2,
+			2, 1, 3,
+		}
+
+		app.DrawMesh(mesh, indecies)
+	*/
 
 }
 
@@ -92,10 +118,6 @@ func (app *Application) CreateRenderer() {
 
 	a_Vertex = app.shader.GetAttribLocation("a_Vertex")
 	u_Projection = app.shader.GetUniformLocation("u_Projection")
-}
-
-func (app *Application) DrawBackground() {
-
 }
 
 func (app *Application) DrawMesh(vertices []Vector3, indecies []uint16) {
@@ -114,14 +136,14 @@ func (app *Application) DrawMesh(vertices []Vector3, indecies []uint16) {
 	n.GL.BufferData(n.GlElementArrayBuffer, indecies, n.GlStaticDraw)
 
 	// Bind the uniformed
-	projection := getProjection(cameraPosition)
+	projection := getProjection()
 	n.GL.UniformMatrix4fv(u_Projection, projection)
 
 	// Draw the elements
 	n.GL.DrawElements(n.GlTriangles, 6, n.GlUnsignedShort, 0)
 }
 
-func getProjection(cameraPosition n.Vector3) Matrix {
+func getProjection() Matrix {
 	//m := n.NewMatrixOrtho(0, 0, , , 400, -400)
 	//m = m.Translate(cameraPosition.Negate())
 

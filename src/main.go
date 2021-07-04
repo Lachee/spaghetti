@@ -13,8 +13,12 @@ func main() {
 	args := os.Args
 	fmt.Println(args)
 
-	var app noodle.Application
-	app = &spaghetti.Application{}
+	// Before we run, preprocess
+	var spag = &spaghetti.Application{}
+	initializeBuildTag(spag)
+
+	// Run
+	var app noodle.Application = spag
 	exitCode := noodle.Run(app, args[0])
 	log.Println("Exited with code", exitCode)
 }

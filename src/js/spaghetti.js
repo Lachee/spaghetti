@@ -1,7 +1,7 @@
 
 // Load the webassembly and the executor
-import '../../bin/wasm_exec'
-import wasmBytes from '../../bin/spaghetti.wasm'
+import '../../resources/bin/wasm_exec'
+import wasm from '../../resources/bin/spaghetti.wasm'
 
 //Load the styling
 import './spaghetti.css'
@@ -29,7 +29,14 @@ export class Editor {
 
         //Load the go module
 		const go = new Go();
-        const result = await WebAssembly.instantiate(wasmBytes, go.importObject);
+        let result = null;
+        if (typeof(wasm) === 'string') {
+            console.log('streaming assembly from ', wasm);
+            result = await WebAssembly.instantiateStreaming(fetch(wasm), go.importObject);
+        } else {
+            console.log('loading raw assembly byes');
+            result = await WebAssembly.instantiate(wasm, go.importObject);
+        }
 
         //Run the module
         go.argv = [ `.spaghetti-instance-${this.#instance}` ];
