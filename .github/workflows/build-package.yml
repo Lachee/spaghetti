@@ -27,14 +27,16 @@ jobs:
 
       # Build
     - name: Build
-      run: ./build.sh
+      run: |
+        ./build.sh
+        cp webserver/index.html resources/index.html
       
       # Upload
     - name: Upload Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
         name: spaghetti.js
-        path: resources/bin/spaghetti.js
+        path: resources
 
   deploy:
     runs-on: ubuntu-latest
@@ -44,14 +46,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: spaghetti.js
+          
       - name: Prepare folders
-        run: |
-          mkdir publish
-          cp resources publish/resources
-          cp webserver/index.html publish/index.html
-          cp spaghetti.js publish/resources/bin/spagehetti.js
+        run: cp resources/index.html ./index.html
+
       - name: Publish Pages
         uses: peaceiris/actions-gh-pages@v3        
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./publish
+          publish_dir: ./
