@@ -10,7 +10,7 @@ type Slice struct {
 	a_Vertex     n.WebGLAttributeLocation
 	a_UV         n.WebGLAttributeLocation
 	u_Projection n.WebGLUniformLocation
-	u_Resolution n.WebGLUniformLocation
+	u_Sampler    n.WebGLUniformLocation
 }
 
 func createSlice() (*Slice, error) {
@@ -29,12 +29,14 @@ func createSlice() (*Slice, error) {
 
 	//Set the buffers and get the locations
 	s.texture = image.CreateTexture()
+	s.texture.SetFilter(n.TextureFilterNearest)
 	s.shader = shader
 	s.vertexBuffer = GL.CreateBuffer()
 	s.indexBuffer = GL.CreateBuffer()
 	s.a_Vertex = s.shader.GetAttribLocation("a_Vertex")
 	s.a_UV = s.shader.GetAttribLocation("a_UV")
 	s.u_Projection = s.shader.GetUniformLocation("u_Projection")
+	s.u_Sampler = s.shader.GetUniformLocation("u_Sampler")
 
 	// Return the object
 	return s, nil
@@ -44,7 +46,7 @@ func (s *Slice) Draw(pos Vector2, size Vector2) {
 	var GL = n.GL
 
 	// Bind texture
-	s.texture.Bind()
+	s.texture.SetSampler(s.u_Sampler, 0)
 	defer s.texture.Unbind()
 
 	mesh := []Vector3{
