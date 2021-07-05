@@ -4,23 +4,28 @@
 // - book: https://thebookofshaders.com/09/
 
 //vert:
+precision mediump float;
 attribute vec4 a_Vertex;	//position
 
 uniform mat4 u_Projection;
 uniform vec2 u_Resolution;
 
 varying vec2 v_uv;
+varying vec2 v_pos;
 
 void main() {
     vec4 pos = vec4(a_Vertex.x * u_Resolution.x, a_Vertex.y * u_Resolution.y, a_Vertex.z, 1);
     gl_Position = u_Projection * pos;
-    v_uv = pos.xy;
+    v_uv = (gl_Position.xy + 1.0) / 2.0; 
+    v_pos = pos.xy;
 }
 
 //frag:
 precision mediump float;
 
 varying vec2 v_uv;
+varying vec2 v_pos;
+uniform vec2 u_Resolution;
 
 float grid(vec2 st, float res) {
     vec2 grid = fract(st * res);
@@ -28,19 +33,14 @@ float grid(vec2 st, float res) {
 }
 
 void main(void) {
-    float scale = 10.0;
-    float resolution = 0.1;
-    vec3 colour = vec3(0.25, 0.25, 0.25);
-
-    // Scale the colours a bit for the other quads
-    if (v_uv.y < 0.0)
-        colour.g = 0.0;
-    if (v_uv.x < 0.0)
-        colour.r = 0.0;
-
-
-    vec2 grid_uv = v_uv.xy * scale; // scale
-    float x = grid(grid_uv, resolution); // resolution
-    gl_FragColor.rgb = colour * x;
     gl_FragColor.a = 1.0;
+
+    vec2 iResolution = vec2(1.0 / u_Resolution.x, 1.0 / u_Resolution.y);
+
+    if (v_uv.x < 10.0*iResolution.x) {
+
+    } else {
+        gl_FragColor.r = v_uv.x;
+        gl_FragColor.g = v_uv.y;
+    }
 }

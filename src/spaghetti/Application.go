@@ -18,9 +18,7 @@ var (
 type Application struct {
 	shader *n.Shader
 	bg     *Background
-}
-
-func CursorVisibility(visbility bool) {
+	slice  *Slice
 }
 
 //EnableDebugger will set flags for debugging purposes
@@ -30,16 +28,21 @@ func (app *Application) EnableDebugger() {
 
 //Start allows for setup
 func (app *Application) Start() bool {
-	testShader, _ := n.LoadShaderFromCombinedURL("resources/shader/slice.glsl")
-	app.shader = testShader
-	pixelScale = 100
-	app.CreateRenderer()
+	pixelScale = 10
 
 	// Create the background
 	bg, err := createBackground()
 	app.bg = bg
 	if err != nil {
 		n.Error("Failed to create the background", err)
+		return false
+	}
+
+	// Create the slice
+	s, err := createSlice()
+	app.slice = s
+	if err != nil {
+		n.Error("Failed to create the slice", err)
 		return false
 	}
 
@@ -99,35 +102,41 @@ func (app *Application) Render() {
 	n.GL.Clear(n.GlColorBufferBit | n.GlDepthBufferBit)
 	app.bg.Draw()
 
-	var x float32 = 0
-	var y float32 = 0
+	var x float32 = 1
+	var y float32 = 1
 
-	boundingBox := n.GL.BoundingBox()
-	mousePosition := n.Input().GetMousePosition()
-	mp4 := Vector4{
-		X: (mousePosition.X / (boundingBox.Width / 2)) - 1,
-		Y: ((boundingBox.Height - mousePosition.Y) / (boundingBox.Height / 2)) - 1,
-		Z: 0,
-		W: 1,
-	}
-	mp4 = getProjection().Inverse().MultiplyVector4(mp4)
-	x = mp4.X
-	y = mp4.Y
-
-	mesh := []Vector3{
-		n.NewVector3(x+0, y+0, 0),
-		n.NewVector3(x+1, y+0, 0),
-		n.NewVector3(x+0, y+1, 0),
-		n.NewVector3(x+1, y+1, 0),
+	if n.Input().GetButton(0) {
+		boundingBox := n.GL.BoundingBox()
+		mousePosition := n.Input().GetMousePosition()
+		mp4 := Vector4{
+			X: (mousePosition.X / (boundingBox.Width / 2)) - 1,
+			Y: ((boundingBox.Height - mousePosition.Y) / (boundingBox.Height / 2)) - 1,
+			Z: 0,
+			W: 1,
+		}
+		mp4 = getProjection().Inverse().MultiplyVector4(mp4)
+		x = mp4.X
+		y = mp4.Y
 	}
 
-	indecies := []uint16{
-		0, 1, 2,
-		2, 1, 3,
-	}
+	app.slice.Draw(Vector2{0, 0}, Vector2{x, y})
 
-	n.GL.Clear(n.GlDepthBufferBit)
-	app.DrawMesh(mesh, indecies)
+	/*
+		mesh := []Vector3{
+			n.NewVector3(0, 0, 0),
+			n.NewVector3(x, 0, 0),
+			n.NewVector3(0, y, 0),
+			n.NewVector3(x, y, 0),
+		}
+
+		indecies := []uint16{
+			0, 1, 2,
+			2, 1, 3,
+		}
+
+		n.GL.Clear(n.GlDepthBufferBit)
+		app.DrawMesh(mesh, indecies)
+	*/
 
 }
 
