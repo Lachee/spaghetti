@@ -1,0 +1,57 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      MODE: production      
+    steps:
+      # Setup the enviroment
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+    - name: Set up Node.js
+      uses: actions/setup-node@v1
+
+      # Setup the build
+    - name: Initialize
+      run: npm i
+
+      # Build
+    - name: Build
+      run: ./build.sh
+      
+      # Upload
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: spaghetti.js
+        path: resources/bin/spaghetti.js
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: spaghetti.js
+      - name: Prepare folders
+        run: |
+          mkdir publish
+          cp resources publish/resources
+          cp webserver/index.html publish/index.html
+          cp spaghetti.js publish/resources/bin/spagehetti.js
+      - name: Publish Pages
+        uses: peaceiris/actions-gh-pages@v3        
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./publish
