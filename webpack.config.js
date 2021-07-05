@@ -10,7 +10,8 @@ module.exports = (env, options) => {
     output: {
       filename:       'spaghetti.js',
       path:           path.resolve(__dirname, './resources/bin'),
-      library:        'Spaghetti'
+      library:        'Spaghetti',
+      libraryTarget:  'umd',
     },
     resolve: { 
       fallback: { 
