@@ -46,7 +46,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: spaghetti.js
-          
+          path: resources
+
       - name: Prepare folders
         run: cp resources/index.html ./index.html
 
