@@ -20,23 +20,18 @@
 	</style>
 
 	<!-- WebAssembly Loading -->
-	<!--
-	<script src="wasm_exec.js"></script>
-	<script>
-		const go = new Go();
-		WebAssembly.instantiateStreaming(fetch("resources/spaghetti.wasm"), go.importObject).then((result) => {
-			go.run(result.instance);
-		});
-	</script>
-	-->
-	<script src="resources/bin/spaghetti.js"></script>
+	<script async src="resources/bin/spaghetti.js"></script>
 
 	<!-- Live Updating -->
 	<script>
-		const ws = new WebSocket("ws://" + window.location.host + "/listen");
-		ws.addEventListener("message", (event) => { console.log(event); window.location = window.location; });
-		ws.addEventListener("close", (event) => { console.error("Live Watch has terminated"); });
-		function abort() { ws.close(); }
+		if (window.location.host.startsWith('localhost')) {
+			console.log('Live Watch', 'Connecting to websocket...');
+			const ws = new WebSocket("ws://" + window.location.host + "/listen");
+			ws.addEventListener("open", (event) => { console.log('Live Watch', 'open', event); });
+			ws.addEventListener("message", (event) => { console.log('Live Watch', 'event', event); window.location = window.location; });
+			ws.addEventListener("close", (event) => { console.error('Live Watch', 'close', event); });
+			function abort() { ws.close(); }
+		}
 	</script>
 </head>
 
