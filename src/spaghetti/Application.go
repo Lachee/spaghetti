@@ -43,11 +43,20 @@ func (app *Application) Start() bool {
 		return false
 	}
 
+	// The mouse should trigger render events
+	n.MouseDraws = true
 	return true
 }
 
+var toggle bool = false
+
 //Update runs once a frame
 func (app *Application) Update(dt float32) {
+	if n.Input().GetKeyDown(n.KeySpace) {
+		toggle = !toggle
+		log.Println("toggle", toggle)
+	}
+
 	// Pixel Scale change
 	if n.Input().GetKey(n.KeyNumAdd) {
 		pixelScale += 1
