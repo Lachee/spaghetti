@@ -9,6 +9,9 @@ type Slice struct {
 	indexBuffer  n.WebGLBuffer
 	a_Vertex     n.WebGLAttributeLocation
 	a_UV         n.WebGLAttributeLocation
+	u_Size       n.WebGLUniformLocation
+	u_Window     n.WebGLUniformLocation
+	u_Dimension  n.WebGLUniformLocation
 	u_Projection n.WebGLUniformLocation
 	u_Sampler    n.WebGLUniformLocation
 }
@@ -23,7 +26,7 @@ func createSlice() (*Slice, error) {
 		return nil, shaderError
 	}
 
-	image, imageError := LoadResourceImage("resource://textures/slice.png")
+	image, imageError := LoadResourceImage("resource://textures/horizontal.png")
 	if imageError != nil {
 		n.Error("Failed to load the image", imageError)
 		return nil, imageError
@@ -38,6 +41,9 @@ func createSlice() (*Slice, error) {
 	s.a_Vertex = s.shader.GetAttribLocation("a_Vertex")
 	s.a_UV = s.shader.GetAttribLocation("a_UV")
 	s.u_Projection = s.shader.GetUniformLocation("u_Projection")
+	s.u_Size = s.shader.GetUniformLocation("u_Size")
+	s.u_Window = s.shader.GetUniformLocation("u_Window")
+	s.u_Dimension = s.shader.GetUniformLocation("u_Dimension")
 	s.u_Sampler = s.shader.GetUniformLocation("u_Sampler")
 
 	// Return the object
@@ -46,6 +52,9 @@ func createSlice() (*Slice, error) {
 
 func (s *Slice) Draw(pos Vector2, size Vector2) {
 	var GL = n.GL
+
+	// Set the program
+	GL.UseProgram(s.shader.GetProgram())
 
 	// Bind texture
 	s.texture.SetSampler(s.u_Sampler, 0)
@@ -99,6 +108,14 @@ func (s *Slice) Draw(pos Vector2, size Vector2) {
 	// Set the projection
 	projection := getProjection()
 	GL.UniformMatrix4fv(s.u_Projection, projection)
+	GL.Uniform2v(s.u_Size, size)
+
+	//TOP LEFT BOTTOM RIGHT
+	window := n.NewVector4i(5, 8, 5, 8)
+	dimension := n.NewVector2i(s.texture.Width(), s.texture.Height())
+	GL.Uniform4v(s.u_Window, window)
+	GL.Uniform2v(s.u_Dimension, dimension)
+
 	//GL.Uniform2fv(bg.u_Resolution, []float32{GL.BoundingBox().Width, GL.BoundingBox().Height})
 
 	// Draw the elements

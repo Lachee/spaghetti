@@ -30,7 +30,7 @@ func (app *Application) Start() bool {
 
 	//Load defaults
 	JS = n.Canvas().Get("editor")
-	pixelScale = 10
+	pixelScale = 2
 
 	// Create the background
 	bg, err := createBackground()
@@ -101,8 +101,8 @@ func (app *Application) Render() {
 	n.GL.Clear(n.GlColorBufferBit | n.GlDepthBufferBit)
 	app.bg.Draw()
 
-	var x float32 = 1
-	var y float32 = 1
+	var width float32 = 300
+	var height float32 = 100
 
 	if n.Input().GetButton(0) {
 		boundingBox := n.GL.BoundingBox()
@@ -114,11 +114,11 @@ func (app *Application) Render() {
 			W: 1,
 		}
 		mp4 = getProjection().Inverse().MultiplyVector4(mp4)
-		x = mp4.X
-		y = mp4.Y
+		width = mp4.X
+		height = mp4.Y
 	}
 
-	app.slice.Draw(Vector2{0, 0}, Vector2{x, y})
+	app.slice.Draw(Vector2{0, 0}, Vector2{width, height})
 
 	/*
 		mesh := []Vector3{
