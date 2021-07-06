@@ -32,11 +32,16 @@ jobs:
         cp webserver/index.html resources/index.html
       
       # Upload
-    - name: Upload Artifact
+    - name: Upload Resources
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: spaghetti.js+resources
+        path: resources
+    - name: Upload Spaghetti
       uses: actions/upload-artifact@v2.2.4
       with:
         name: spaghetti.js
-        path: resources
+        path: resources/bin/spaghetti.js
 
   deploy:
     runs-on: ubuntu-latest
@@ -45,11 +50,15 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
-          name: spaghetti.js
-          path: resources
+          name: spaghetti.js+resources
+          path: tmp
 
       - name: Prepare folders
-        run: cp resources/index.html ./index.html
+        run: |
+          mkdir resources
+          cp tmp/bin resources/bin
+          cp tmp/index.html ./index.html
+          rm -rf tmp
 
       - name: Publish Pages
         uses: peaceiris/actions-gh-pages@v3        
