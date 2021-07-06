@@ -14,7 +14,7 @@ func createBackground() (*Background, error) {
 	var GL = n.GL
 	bg := &Background{}
 
-	shader, err := n.LoadShaderFromCombinedURL("resources/shader/background.glsl")
+	shader, err := LoadResourceShader("resource://shader/background.glsl")
 	if err != nil {
 		return nil, err
 	}

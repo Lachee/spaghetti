@@ -7,12 +7,11 @@ import (
 	n "github.com/lachee/noodle"
 )
 
+// Library is the hook to the JS library
+var JS js.Value
+
 var cursorSize = Vector2{1, 1}
 var cursorHotspot = Vector2{-1, -3}
-
-var (
-	GL *n.WebGL
-)
 
 //Application handles the game. Put your variables in here
 type Application struct {
@@ -28,6 +27,9 @@ func (app *Application) EnableDebugger() {
 
 //Start allows for setup
 func (app *Application) Start() bool {
+
+	//Load defaults
+	JS = n.Canvas().Get("editor")
 	pixelScale = 10
 
 	// Create the background
@@ -91,9 +93,6 @@ var (
 
 //Render draws the frame
 func (app *Application) Render() {
-
-	// Assign the GL shortcut
-	GL = n.GL
 
 	n.DebugDraw = true
 

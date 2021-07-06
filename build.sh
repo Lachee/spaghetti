@@ -1,3 +1,5 @@
+set -e
+
 DIR=$PWD
 if [ -z "$MODE" ]; then
     MODE="development"

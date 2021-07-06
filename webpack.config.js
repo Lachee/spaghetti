@@ -39,19 +39,52 @@ module.exports = (env, options) => {
           }
         },
         {
+          test: /\.(png|jpg|gif)$/i,
+          exclude: /bin/,
+          loader: options.mode === 'production' ? 'url-loader' : 'file-loader',
+          options: {
+            publicPath:   '.',
+            name:         '[path][name].[ext]',
+            emitFile:     false,
+          }
+        },
+        // Text Loader for text is while a smart idea, not actually too useful
+        // {
+        //   test: /\.(glsl|vert|frag|txt|shader|json)/i,
+        //   exclude: /bin/,
+        //   loader:   options.mode === 'production' ? 'text-loader' : 'file-loader',
+        //   options:  options.mode === 'production' ? {} : {
+        //     publicPath:   '.',
+        //     name:         '[path][name].[ext]',
+        //     emitFile:     false,
+        //   }
+        // },
+        {
+          test: /resources/i,
+          exclude: /bin|png|jpg|gif/,
+           /** This can be either a url-loader or a arraybuffer-loader */
+          loader:   options.mode === 'production' ? 'url-loader' : 'file-loader',  
+          options:  options.mode === 'production' ? { limit: true } : {
+            publicPath:   '.',
+            name:         '[path][name].[ext]',
+            emitFile:     false,
+          }
+        },
+        {
           test: /\.wasm$/i,
           use: {
             loader: options.mode === 'production' ? 'arraybuffer-loader' : 'file-loader',
             options: {
-              name: '[name].[ext]',
-              emitFile: false,
+              publicPath:   '.',
+              name:         '[path][name].[ext]',
+              emitFile:     false,
             }
           }
         },
         {
           test: /\.css$/i,
           use: ["style-loader", "css-loader"],
-        }
+        },
       ],
     },
   };

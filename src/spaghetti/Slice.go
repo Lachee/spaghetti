@@ -17,14 +17,16 @@ func createSlice() (*Slice, error) {
 	var GL = n.GL
 	s := &Slice{}
 
-	shader, err := n.LoadShaderFromCombinedURL("resources/shader/slice.glsl")
-	if err != nil {
-		return nil, err
+	shader, shaderError := LoadResourceShader("resource://shader/slice.glsl")
+	if shaderError != nil {
+		n.Error("Failed to load the shader", shaderError)
+		return nil, shaderError
 	}
 
-	image, err := n.LoadImage("resources/textures/slice.png")
-	if err != nil {
-		return nil, err
+	image, imageError := LoadResourceImage("resource://textures/slice.png")
+	if imageError != nil {
+		n.Error("Failed to load the image", imageError)
+		return nil, imageError
 	}
 
 	//Set the buffers and get the locations
