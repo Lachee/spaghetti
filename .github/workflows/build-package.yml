@@ -56,7 +56,7 @@ jobs:
       - name: Prepare folders
         run: |
           mkdir resources
-          cp tmp/bin resources/bin
+          mv tmp/bin/ resources/bin/
           cp tmp/index.html ./index.html
           rm -rf tmp
 
