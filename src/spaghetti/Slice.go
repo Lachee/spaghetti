@@ -4,7 +4,6 @@ import n "github.com/lachee/noodle"
 
 type Slice struct {
 	shader       *n.Shader
-	texture      *n.Texture
 	vertexBuffer n.WebGLBuffer
 	indexBuffer  n.WebGLBuffer
 	a_Vertex     n.WebGLAttributeLocation
@@ -14,6 +13,9 @@ type Slice struct {
 	u_Dimension  n.WebGLUniformLocation
 	u_Projection n.WebGLUniformLocation
 	u_Sampler    n.WebGLUniformLocation
+	u_Offset     n.WebGLUniformLocation
+	u_Tiling     n.WebGLUniformLocation
+	cut          *NineSliceCut
 }
 
 func createSlice() (*Slice, error) {
@@ -26,15 +28,44 @@ func createSlice() (*Slice, error) {
 		return nil, shaderError
 	}
 
-	image, imageError := LoadResourceImage("resource://textures/horizontal.png")
+	/*
+		//Load Image
+		image, imageError := LoadResourceImage("resource://textures/horizontal_atlas.png")
+		if imageError != nil {
+			n.Error("Failed to load the image", imageError)
+			return nil, imageError
+		}
+
+		//Set the buffers and get the locations
+		texture := image.CreateTexture()
+		texture.SetFilter(n.TextureFilterNearest)
+		s.cut = &NineSliceCut{
+			top: 5, left: 8, bottom: 5, right: 8,
+			cols: 2, rows: 1,
+			offsetX: 0, offsetY: 0,
+
+			texture: texture,
+		}
+	*/
+
+	//Load Image
+	image, imageError := LoadResourceImage("resource://textures/slice_atlas.png")
 	if imageError != nil {
 		n.Error("Failed to load the image", imageError)
 		return nil, imageError
 	}
 
 	//Set the buffers and get the locations
-	s.texture = image.CreateTexture()
-	s.texture.SetFilter(n.TextureFilterNearest)
+	texture := image.CreateTexture()
+	texture.SetFilter(n.TextureFilterNearest)
+	s.cut = &NineSliceCut{
+		top: 5, left: 5, bottom: 5, right: 5,
+		cols: 6, rows: 1,
+		offsetX: 0, offsetY: 0,
+
+		texture: texture,
+	}
+
 	s.shader = shader
 	s.vertexBuffer = GL.CreateBuffer()
 	s.indexBuffer = GL.CreateBuffer()
@@ -45,20 +76,22 @@ func createSlice() (*Slice, error) {
 	s.u_Window = s.shader.GetUniformLocation("u_Window")
 	s.u_Dimension = s.shader.GetUniformLocation("u_Dimension")
 	s.u_Sampler = s.shader.GetUniformLocation("u_Sampler")
+	s.u_Offset = s.shader.GetUniformLocation("u_Offset")
+	s.u_Tiling = s.shader.GetUniformLocation("u_Tiling")
 
 	// Return the object
 	return s, nil
 }
 
-func (s *Slice) Draw(pos Vector2, size Vector2) {
+func (s *Slice) Draw(pos Vector2, size Vector2, tile int) {
 	var GL = n.GL
 
 	// Set the program
 	GL.UseProgram(s.shader.GetProgram())
 
 	// Bind texture
-	s.texture.SetSampler(s.u_Sampler, 0)
-	defer s.texture.Unbind()
+	s.cut.texture.SetSampler(s.u_Sampler, 0)
+	defer s.cut.texture.Unbind()
 
 	mesh := []Vector3{
 		n.NewVector3(0, 0, 0).Add(pos.ToVector3()),
@@ -111,13 +144,42 @@ func (s *Slice) Draw(pos Vector2, size Vector2) {
 	GL.Uniform2v(s.u_Size, size)
 
 	//TOP LEFT BOTTOM RIGHT
-	window := n.NewVector4i(5, 8, 5, 8)
-	dimension := n.NewVector2i(s.texture.Width(), s.texture.Height())
-	GL.Uniform4v(s.u_Window, window)
-	GL.Uniform2v(s.u_Dimension, dimension)
+	s.cut.offsetX = tile
+	GL.Uniform4v(s.u_Window, s.cut.Window())
+	GL.Uniform2v(s.u_Dimension, s.cut.Size())
+	GL.Uniform2v(s.u_Offset, s.cut.Offset())
+	GL.Uniform2f(s.u_Tiling, float32(s.cut.cols), float32(s.cut.rows))
 
 	//GL.Uniform2fv(bg.u_Resolution, []float32{GL.BoundingBox().Width, GL.BoundingBox().Height})
 
 	// Draw the elements
 	n.GL.DrawElements(n.GlTriangles, len(indecies), n.GlUnsignedShort, 0)
+}
+
+type NineSliceCut struct {
+	top, left, bottom, right float32
+	texture                  *n.Texture
+	cols, rows               int
+	offsetX, offsetY         int
+}
+
+//Size returns the sliced sice of the texture
+func (cut *NineSliceCut) Size() Vector2 {
+	return n.NewVector2(float32(cut.texture.Width()), float32(cut.texture.Height()))
+}
+
+//Offset gets teh offset of the slice
+func (cut *NineSliceCut) Offset() Vector2 {
+	return n.NewVector2i(cut.offsetX, cut.offsetY)
+}
+
+//Window gets the window
+func (cut *NineSliceCut) Window() Vector4 {
+	//size := cut.Size()
+	return Vector4{
+		X: cut.top,
+		Y: cut.left,
+		Z: cut.bottom,
+		W: cut.right,
+	}
 }

@@ -103,8 +103,9 @@ func (app *Application) Render() {
 
 	var width float32 = 300
 	var height float32 = 100
+	var tile int = 0
 
-	if n.Input().GetButton(0) {
+	if n.Input().GetButton(2) {
 		boundingBox := n.GL.BoundingBox()
 		mousePosition := n.Input().GetMousePosition()
 		mp4 := Vector4{
@@ -118,7 +119,23 @@ func (app *Application) Render() {
 		height = mp4.Y
 	}
 
-	app.slice.Draw(Vector2{0, 0}, Vector2{width, height})
+	if n.Input().GetKey(n.KeyOne) || n.Input().GetButton(0) {
+		tile = 1
+	}
+	if n.Input().GetKey(n.KeyTwo) {
+		tile = 2
+	}
+	if n.Input().GetKey(n.KeyThree) {
+		tile = 3
+	}
+	if n.Input().GetKey(n.KeyFour) {
+		tile = 4
+	}
+	if n.Input().GetKey(n.KeyFive) {
+		tile = 5
+	}
+
+	app.slice.Draw(Vector2{0, 0}, Vector2{width, height}, tile)
 
 	/*
 		mesh := []Vector3{
