@@ -17,7 +17,8 @@ var cursorHotspot = Vector2{-1, -3}
 type Application struct {
 	shader *n.Shader
 	bg     *Background
-	slice  *Slice
+
+	UI *UI
 }
 
 //EnableDebugger will set flags for debugging purposes
@@ -41,12 +42,20 @@ func (app *Application) Start() bool {
 	}
 
 	// Create the slice
-	s, err := createSlice()
-	app.slice = s
+	ui, err := NewUI()
+	app.UI = ui
 	if err != nil {
-		n.Error("Failed to create the slice", err)
 		return false
 	}
+
+	// Push a button
+	ui.AddButton(Button{
+		rectangle:    n.NewRectangle(10, 10, 150, 25),
+		text:         "Test Button",
+		normalStyle:  0,
+		hoverStyle:   1,
+		pressedStyle: 2,
+	})
 
 	// The mouse should trigger render events
 	n.MouseDraws = true
@@ -99,43 +108,45 @@ func (app *Application) Render() {
 	// Clear the canvas
 	n.GL.ClearColor(n.White)
 	n.GL.Clear(n.GlColorBufferBit | n.GlDepthBufferBit)
-	app.bg.Draw()
+	//app.bg.Draw()
+	//n.GL.Clear(n.GlDepthBufferBit)
 
-	var width float32 = 300
-	var height float32 = 100
-	var tile int = 0
+	app.UI.Draw()
+	/*
+		var width float32 = 300
+		var height float32 = 100
+		var tile int = 0
 
-	if n.Input().GetButton(2) {
-		boundingBox := n.GL.BoundingBox()
-		mousePosition := n.Input().GetMousePosition()
-		mp4 := Vector4{
-			X: (mousePosition.X / (boundingBox.Width / 2)) - 1,
-			Y: ((boundingBox.Height - mousePosition.Y) / (boundingBox.Height / 2)) - 1,
-			Z: 0,
-			W: 1,
+		if n.Input().GetButton(2) {
+			boundingBox := n.GL.BoundingBox()
+			mousePosition := n.Input().GetMousePosition()
+			mp4 := Vector4{
+				X: (mousePosition.X / (boundingBox.Width / 2)) - 1,
+				Y: ((boundingBox.Height - mousePosition.Y) / (boundingBox.Height / 2)) - 1,
+				Z: 0,
+				W: 1,
+			}
+			mp4 = getProjection().Inverse().MultiplyVector4(mp4)
+			width = mp4.X
+			height = mp4.Y
 		}
-		mp4 = getProjection().Inverse().MultiplyVector4(mp4)
-		width = mp4.X
-		height = mp4.Y
-	}
 
-	if n.Input().GetKey(n.KeyOne) || n.Input().GetButton(0) {
-		tile = 1
-	}
-	if n.Input().GetKey(n.KeyTwo) {
-		tile = 2
-	}
-	if n.Input().GetKey(n.KeyThree) {
-		tile = 3
-	}
-	if n.Input().GetKey(n.KeyFour) {
-		tile = 4
-	}
-	if n.Input().GetKey(n.KeyFive) {
-		tile = 5
-	}
-
-	app.slice.Draw(Vector2{0, 0}, Vector2{width, height}, tile)
+		if n.Input().GetKey(n.KeyOne) || n.Input().GetButton(0) {
+			tile = 1
+		}
+		if n.Input().GetKey(n.KeyTwo) {
+			tile = 2
+		}
+		if n.Input().GetKey(n.KeyThree) {
+			tile = 3
+		}
+		if n.Input().GetKey(n.KeyFour) {
+			tile = 4
+		}
+		if n.Input().GetKey(n.KeyFive) {
+			tile = 5
+		}
+	*/
 
 	/*
 		mesh := []Vector3{
