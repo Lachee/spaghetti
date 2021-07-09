@@ -24,3 +24,9 @@ type Transform = noodle.Transform
 
 //Transform2D alias of noodle.Transform2D
 type Transform2D = noodle.Transform2D
+
+//Color
+type Color = noodle.Color
+
+//Point
+type Point = noodle.Point
