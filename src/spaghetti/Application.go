@@ -122,6 +122,9 @@ func (app *Application) Render() {
 	app.Renderer.DrawBox(n.NewRectangle(10, 10, 150, 150), Point{0, 0}, app.boxWindow)
 	app.Renderer.DrawBox(n.NewRectangle(30, 30, 150, 150), Point{1, 0}, app.boxWindow)
 	app.Renderer.DrawBox(n.NewRectangle(50, 50, 150, 150), Point{2, 0}, app.boxWindow)
+
+	mouse := GetUIMousePosition()
+	app.Renderer.DrawBox(n.NewRectangle(70, 70, mouse.X-70, mouse.Y-70), Point{3, 0}, app.boxWindow)
 	app.Renderer.Render()
 
 	/*
