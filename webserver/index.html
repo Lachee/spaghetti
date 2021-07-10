@@ -10,12 +10,25 @@
 			margin: 0;
 		}
 
-		.spaget-indicator {
+		 .spaget-indicator {
 			position: fixed;
 			width: 10px;
 			height: 10px;
 			background: black;
 			clip-path: polygon(100% 0, 64% 43%, 100% 78%, 80% 100%, 36% 64%, 0 100%, 0 0);
+		}
+
+		#fish {
+			display: none;
+			background: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			background: white;
+			z-index: 100;;
+		}
+
+		#editor {
 		}
 	</style>
 
@@ -37,6 +50,7 @@
 
 <body>
 	<div id='editor' class="container"></div>
+	<canvas id='fish' width="600px" height="700px"></canvas>
 	<script>
 		//Fetch the editor
 		const editor = new Spaghetti.Editor({ 

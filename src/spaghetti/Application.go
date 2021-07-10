@@ -74,6 +74,17 @@ func (app *Application) Start() bool {
 		rows:    1,
 	}
 
+	// Prepare font resource
+	fontResourceResult := <-FetchResource("resource://font/LobsterTwo-Regular.ttf")
+	if fontResourceResult.Error != nil {
+		n.Error("Failed to load the font", fontResourceResult.Error)
+		return false
+	}
+
+	// Get the polygons
+	fontPaths := fontResourceResult.Data.Invoke("Hello World", 12)
+	log.Println(fontPaths)
+
 	// The mouse should trigger render events
 	n.MouseDraws = true
 	return true

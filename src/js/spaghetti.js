@@ -128,7 +128,6 @@ export class Editor {
 
 
     /** Fetches the given resource or url .
-     * @return {Promise<Uint8Array|Image>}
     */
     async fetchResource(resource) {
         if (this.cacheResources && this.resources[resource]) 

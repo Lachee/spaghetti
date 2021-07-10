@@ -1,3 +1,5 @@
+import opentype from 'opentype.js';
+import { getPath as getFontPolygon } from './font';
 
 // Load the resources
 export const ResourceProtocol = 'resource://';
@@ -19,8 +21,26 @@ const loaders = {
     'image/jpeg':   imageLoader,
     'image/gif':    imageLoader,
     'image/svg':    imageLoader,
+    'font/ttf':     fontLoader,
 }
 
+async function fontLoader(buff) {
+    // It's already a buffer so lets just return the parsed font
+    if (buff instanceof ArrayBuffer) {
+        const font = opentype.parse(buff);
+        return (str, size) => getFontPolygon(font, str, size);
+    }
+
+    // It's a URI
+    const blob = new Blob([buff]);
+    const uri = URL.createObjectURL(blob);
+    return await new Promise((resolve, reject) => {
+        opentype.load(uri, function(err, font) {
+            if (err) return reject(err);         
+            return (str, size) => getFontPolygon(font, str, size);
+        });
+    });
+}
 async function stringLoader(buff) {
     if (typeof buff === 'string') return buff;
     if (buff instanceof ArrayBuffer) buff = new Uint8Array(buff);
