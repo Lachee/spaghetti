@@ -3,19 +3,8 @@
 import './spaghetti.css'
 import '../../resources/bin/wasm_exec'
 import wasm from '../../resources/bin/spaghetti.wasm'
+import { fetchResource as fetchResource } from './resource';
 
-
-export const ResourceProtocol = 'resource://';
-export const Resources = {};
-const context = require.context('../../resources/', true, /.*$/, 'sync');
-context.keys()
-        .forEach(path => {
-            const name = path.substr(2);
-            if (!name.startsWith('bin/')) {
-                const m =  context(path);
-                Resources[name] = m.default || m;
-            }
-        });
 
 
 let _editor_instances = 0;
@@ -26,8 +15,6 @@ export class Editor {
     container;
     canvas;
 
-    /** @type {String} URL to the resource folder when it needs to look up. */
-    resourceURL = '/resources';
     /** @type {Boolean} Indicating if the downloaded resources get stored in the resource collection */
     cacheResources = false;
     resources = { };
@@ -143,95 +130,12 @@ export class Editor {
     /** Fetches the given resource or url .
      * @return {Promise<Uint8Array|Image>}
     */
-    async fetchResource(resource) {        
-        this.log('resource', 'fetch', resource);
+    async fetchResource(resource) {
+        if (this.cacheResources && this.resources[resource]) 
+            return this.resources[resource];
 
-        // prepare results
-        let url = resource;
-        let results = null;
-
-        // Its a resource, so load from there
-        if (resource.startsWith(ResourceProtocol)) {
-            resource = resource.substr(ResourceProtocol.length);                
-            const module = this.resources[resource] || Resources[resource];
-            
-            // Return directly
-            if (module instanceof Uint8Array || module instanceof Image) {
-                results = module;
-            } else if (module instanceof ArrayBuffer) {
-                results = new Uint8Array(module);
-            } else if (module !== null) {
-               // If its a data url, then download the image.
-                // otherwise we need to update our resource URL to it.
-                if (typeof(module) === 'string') {     
-                    if (module.startsWith('data:image')) {
-                        this.log('resource', 'decode image'); 
-                        results = await this.#loadImage(module);
-                    } else if (module.startsWith('data:;')) {
-                        this.log('resource', 'decode data'); 
-                        const enc = new TextEncoder(); 
-                        results = enc.encode(atob(module.substr(13)));
-                    } else {
-                        url = module;
-                    }
-                }
-            }
-        }
-        
-        // We have no results yet, so lets just download the resource
-        if (results == null) {
-            results = await this.downloadResource(url);
-        }
-
-        return results;
+        const result = await fetchResource(resource);
+        if (this.cacheResources) this.resources[resource] = result;
+        return result;
     }
-
-    /** Downloads the URL 
-     * @return {Promise<Uint8Array|Image>} the downloaded data or image.
-    */
-    async downloadResource(url) {
-        this.log('resource', 'download', url); 
-        const response = await fetch(url);
-        const contentType = response.headers.get('content-type');
-
-        if (contentType.startsWith('image/')) {
-        
-            // Convert the image data
-            // this.log('resource', 'image file', url);
-            const blob = await response.blob();
-            return await this.#loadImage(blob, contentType);
-        
-        } else {
-
-            // Convert the binary data
-            // this.log('resource', 'binary file', url);
-            const buff = await response.arrayBuffer();
-            return new Uint8Array(buff);
-        }
-    }
-
-    /** Loads a new image from the url and waits for it to be done.
-     * @return {Promise<Image>} the image promise
-     */
-    async #loadImage(data, mime = 'image/png') {
-        return await new Promise((resolve, reject) => {
-            const img = new Image();
-            img.setAttribute('crossOrigin', 'anonymous');
-            img.onload = function() {
-                resolve(img);
-            }
-            img.onerror = function(message) {
-                reject(message);
-            }
-
-            if (typeof(data) === 'string') {                // Data is a URI so we can just use it directly
-                img.src = data;
-            } else if (data instanceof Uint8Array) {        // Data is an array of bytes so it needs converting
-                const encoded = btoa(String.fromCharCode.apply(null, ascii));
-                img.src = `data:${mime};base64,${encoded}`;
-            } else if (data instanceof Blob) {              // Data is a blob
-                img.src = URL.createObjectURL(data);
-            }
-        });
-    }    
 }

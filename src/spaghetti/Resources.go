@@ -13,8 +13,9 @@ ResourceResult is a tuple that contains the JS value and any errors that were cr
 Spaghetti itself contains nothing on the Go side to resolve the resources, that is all handled with the wrapper spaghetti.js module which implements functionality to resolve the resource:// url.
 */
 type ResourceResult struct {
-	js    js.Value
-	Error error
+	MimeType string
+	Data     js.Value
+	Error    error
 }
 
 //LoadResourceImage fetches the image from the given resource address. If the resource address is not an image, then an error will be thrown
@@ -76,7 +77,8 @@ func FetchResource(url string) <-chan *ResourceResult {
 		if result.Error != nil {
 			channel <- &ResourceResult{Error: result.Error} // We have an error, abort
 		} else {
-			channel <- &ResourceResult{js: result.Values[0]} // We succeeded, so lets pipe that good stuff in
+			arr := result.Values[0]
+			channel <- &ResourceResult{MimeType: arr.Index(0).String(), Data: arr.Index(1)} // We succeeded, so lets pipe that good stuff in
 		}
 	}()
 	return channel
@@ -84,26 +86,24 @@ func FetchResource(url string) <-chan *ResourceResult {
 
 //ToBytes converts the JS bytes to a GO bytes
 func (result *ResourceResult) ToBytes() []byte {
-	buffer := make([]byte, result.js.Get("length").Int())
-	js.CopyBytesToGo(buffer, result.js)
+	buffer := make([]byte, result.Data.Get("length").Int())
+	js.CopyBytesToGo(buffer, result.Data)
 	return buffer
 }
 
 //ToString converts the bytes to a string
 func (result *ResourceResult) ToString() string {
+	if strings.HasPrefix(result.MimeType, "text/") {
+		return result.Data.String()
+	}
 	return string(result.ToBytes())
 }
 
 //ToImage loads the JS value as an image. This requires the resource to be a Image or ImageData in JS.
 func (result *ResourceResult) ToImage() (*n.Image, error) {
-	if !result.IsImage() {
+	if !strings.HasPrefix(result.MimeType, "image/") {
 		return nil, errors.New("ResourceResult is not an image")
 	}
 
-	return n.LoadImageJS(result.js), nil
-}
-
-//IsImage checks if the resource type is image
-func (result *ResourceResult) IsImage() bool {
-	return result.js.Type().String() != "Image"
+	return n.LoadImageJS(result.Data), nil
 }
