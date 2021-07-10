@@ -22,7 +22,7 @@ func NewRenderer() (*Renderer, error) {
 }
 
 func (renderer *Renderer) DrawRectangle(rectangle Rectangle, color Color) {
-
+	// https://www.shadertoy.com/view/3tj3Dm
 }
 
 func (renderer *Renderer) DrawBox(rectangle Rectangle, tile Point, window SliceWindow) {
