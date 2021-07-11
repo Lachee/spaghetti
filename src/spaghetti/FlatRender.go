@@ -84,7 +84,7 @@ func (render *FlatRender) DrawRectangle(rectangle Rectangle, color Color) {
 }
 
 func (render *FlatRender) DrawText(position Vector2, str string, size int, font *Font, color Color) {
-	indexOffset := uint16(len(render.vertices) / 4)
+	//+-+waindexOffset := uint16(len(render.vertices) / 4)
 	verts, indicies := font.Mesh(str, size)
 	tint := color.ToTint()
 
@@ -99,7 +99,7 @@ func (render *FlatRender) DrawText(position Vector2, str string, size int, font 
 
 	// Push indicies
 	for _, i := range indicies {
-		render.indicies = append(render.indicies, indexOffset+i)
+		render.indicies = append(render.indicies, i)
 	}
 
 	/*
