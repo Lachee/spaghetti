@@ -130,11 +130,17 @@ export class Editor {
     /** Fetches the given resource or url .
     */
     async fetchResource(resource) {
-        if (this.cacheResources && this.resources[resource]) 
-            return this.resources[resource];
+        console.groupCollapsed(`Loading resource "${resource}"`);
+        try {
+            if (this.cacheResources && this.resources[resource]) 
+                return this.resources[resource];
 
-        const result = await fetchResource(resource);
-        if (this.cacheResources) this.resources[resource] = result;
-        return result;
+            const result = await fetchResource(resource);
+            if (this.cacheResources) this.resources[resource] = result;
+            return result;
+        } finally {
+
+            console.groupEnd("Resource " + resource);
+        }
     }
 }

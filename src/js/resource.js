@@ -50,7 +50,7 @@ async function imageLoader(buff, resource) {
     return await new Promise((resolve, reject) => {
         const img = new Image();
         img.setAttribute('crossOrigin', 'anonymous');
-        img.onload = function() { console.log('loaded'); resolve(img); }
+        img.onload = function() { resolve(img); }
         img.onerror = function(message) { console.error('failed to load image', message); reject(message); }
 
         const blob = new Blob([buff]);

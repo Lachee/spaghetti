@@ -27,7 +27,7 @@ type SliceRender struct {
 	count    int
 }
 
-func NewSliceMaterial() (*SliceRender, error) {
+func NewSliceRender() (*SliceRender, error) {
 	mat := &SliceRender{}
 
 	shader, shaderError := LoadResourceShader("resource://shader/slice.glsl")
@@ -139,9 +139,9 @@ func (render *SliceRender) Draw(rectangle Rectangle, tile Point, window SliceWin
 }
 
 // Render flushes the current arrays and draws the elements. This will setup the materials.
-func (render *SliceRender) Render() int {
+func (render *SliceRender) Render() {
 	if render.count == 0 {
-		return 0
+		return
 	}
 
 	// Setup the material
@@ -161,9 +161,7 @@ func (render *SliceRender) Render() int {
 	render.indicies = render.indicies[:0]
 
 	// Return the count while clearing it
-	count := render.count
 	render.count = 0
-	return count
 }
 
 /*

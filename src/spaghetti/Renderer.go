@@ -2,8 +2,14 @@ package spaghetti
 
 import n "github.com/lachee/noodle"
 
+type Render interface {
+	//Render the buffered elements
+	Render()
+}
+
 type Renderer struct {
 	sliceRender *SliceRender
+	flatRender  *FlatRender
 	commands    []RenderCommand
 }
 
@@ -11,10 +17,17 @@ type Renderer struct {
 func NewRenderer() (*Renderer, error) {
 	renderer := &Renderer{}
 
-	sliceRender, err := NewSliceMaterial()
+	sliceRender, err := NewSliceRender()
 	renderer.sliceRender = sliceRender
 	if err != nil {
-		n.Error("Failed to load the renderer", err)
+		n.Error("Failed to load the slice render", err)
+		return nil, err
+	}
+
+	flatRender, err := NewFlatRender()
+	renderer.flatRender = flatRender
+	if err != nil {
+		n.Error("Failed to load the flat render", err)
 		return nil, err
 	}
 
@@ -22,17 +35,19 @@ func NewRenderer() (*Renderer, error) {
 }
 
 func (renderer *Renderer) DrawRectangle(rectangle Rectangle, color Color) {
-	// https://www.shadertoy.com/view/3tj3Dm
+	// TODO: Implement rounded corners like so - https://www.shadertoy.com/view/3tj3Dm
+	renderer.push(&rectangleCommand{
+		rectangle: rectangle,
+		color:     color,
+	})
 }
 
 func (renderer *Renderer) DrawBox(rectangle Rectangle, tile Point, window SliceWindow) {
-	cmd := &boxCommand{
+	renderer.push(&boxCommand{
 		rectangle: rectangle,
 		tile:      tile,
 		window:    window,
-	}
-
-	renderer.push(cmd)
+	})
 }
 
 //push a command to the render queue
@@ -52,6 +67,7 @@ func (renderer *Renderer) Render() {
 
 	// render any slices that were still being buffered
 	renderer.sliceRender.Render()
+	renderer.flatRender.Render()
 
 	// clear the queue
 	renderer.commands = renderer.commands[:0]
@@ -66,13 +82,17 @@ type RenderCommand interface {
 	Render(ctx RenderContext)
 }
 
+//rectangleCommand draws a flat rectangle on the screen
 type rectangleCommand struct {
+	rectangle Rectangle
+	color     Color
 }
 
 func (cmd *rectangleCommand) Render(ctx RenderContext) {
+	ctx.renderer.flatRender.DrawRectangle(cmd.rectangle, cmd.color)
 }
 
-//boxCommand
+//boxCommand drwas a box on the screen
 type boxCommand struct {
 	rectangle Rectangle
 	tile      Point

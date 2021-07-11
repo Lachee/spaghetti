@@ -22,7 +22,7 @@ func LoadResourceFont(resource string) {
 	// TODO:
 	// 1. load the resource
 	// 2. invoke the data with the string and font size
-	// 3. result of invoke is polygon, use https://github.com/tchayen/triangolatte
+	// 3. result of invoke is polygon, use https://github.com/tchayen/triangolatte or https://github.com/mapbox/earcut
 	// 4. render the triangulated polygon
 }
 

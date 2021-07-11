@@ -16,6 +16,8 @@ var cursorHotspot = Vector2{-1, -3}
 var (
 	cameraPosition Vector3
 	pixelScale     float32
+
+	hue float32
 )
 
 //Application handles the game. Put your variables in here
@@ -115,6 +117,9 @@ func (app *Application) Update(dt float32) {
 	axis := n.Input().GetAxis2D(n.KeyA, n.KeyD, n.KeyW, n.KeyS)
 	cameraPosition = cameraPosition.Add(axis.Scale(dt).ToVector3())
 
+	// Colour shifting
+	hue += 90 * dt
+
 	//app.Renderer.Update()
 	//log.Println("Camera Position", cameraPosition, axis)
 }
@@ -135,7 +140,9 @@ func (app *Application) Render() {
 	app.Renderer.DrawBox(n.NewRectangle(50, 50, 150, 150), Point{2, 0}, app.boxWindow)
 
 	mouse := GetUIMousePosition()
-	app.Renderer.DrawBox(n.NewRectangle(70, 70, mouse.X-70, mouse.Y-70), Point{3, 0}, app.boxWindow)
+	//app.Renderer.DrawBox(n.NewRectangle(70, 70, mouse.X-70, mouse.Y-70), Point{3, 0}, app.boxWindow)
+	app.Renderer.DrawRectangle(n.NewRectangle(70, 70, mouse.X-70, mouse.Y-70), n.NewColorFromHSV(n.NewVector3(hue, 1, 1)))
+	// Finally render
 	app.Renderer.Render()
 
 	/*
