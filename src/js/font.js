@@ -165,7 +165,7 @@ class FontBuilder {
         for(const poly of root)
             buildVerts(poly);
 
-        console.log('[font]', '[triangulate]', verticies, indices);
+        console.log('[font]', '[triangulate]', verticies.length, indices.length);
         return {
             verticies:  verticies,
             indices:    new Uint16Array(indices)

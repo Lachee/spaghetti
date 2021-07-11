@@ -78,9 +78,9 @@ func (app *Application) Start() bool {
 	}
 
 	// Prepare font resource
-	//font, err := LoadResourceFont("resource://font/LobsterTwo-Regular.ttf")
+	font, err := LoadResourceFont("resource://font/LobsterTwo-Regular.ttf")
 	//font, err := LoadResourceFont("resource://font/BalsamiqSans-Regular.ttf")
-	font, err := LoadResourceFont("resource://font/ShareTechMono-Regular.ttf")
+	//font, err := LoadResourceFont("resource://font/ShareTechMono-Regular.ttf")
 	app.font = font
 	if err != nil {
 		n.Error("Failed to load the font", err)
@@ -147,7 +147,7 @@ func (app *Application) Render() {
 	// 	{10, 20},
 	// }
 	//app.Renderer.flatRender.DrawPolygon(polygon, color)
-	app.Renderer.flatRender.DrawText(mouse, "spaghetti", 15, app.font, color)
+	app.Renderer.flatRender.DrawText(mouse, "skull is a smelly butt", 15, app.font, color)
 
 	//app.Renderer.DrawBox(n.NewRectangle(70, 70, mouse.X-70, mouse.Y-70), Point{3, 0}, app.boxWindow)
 	//app.Renderer.DrawRectangle(n.NewRectangle(70, 70, mouse.X-70, mouse.Y-70), color)

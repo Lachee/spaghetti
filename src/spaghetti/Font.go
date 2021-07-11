@@ -1,7 +1,6 @@
 package spaghetti
 
 import (
-	"log"
 	"syscall/js"
 )
 
@@ -40,8 +39,15 @@ func (f *Font) Mesh(str string, size int) ([]float32, []uint16) {
 	// 	verticies[i] = float32(vjs.Index(i).Float())
 	// }
 
+	//ijs := result.Get("indices")
+	//ilength := ijs.Get("length").Int()
+	//indices := make([]uint16, ilength)
+	//for i := 0; i < ilength; i++ {
+	//	indices[i] = uint16(ijs.Index(i).Int())
+	//}
+
 	// Save to the cache and return result
-	log.Println("cache miss", str)
+	//log.Println("cache miss", str, ilength, len(indices))
 	f.cache[str] = fontMesh{verticies, indices}
 	return verticies, indices
 }
