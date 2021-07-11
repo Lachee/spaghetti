@@ -147,7 +147,9 @@ func (app *Application) Render() {
 	// 	{10, 20},
 	// }
 	//app.Renderer.flatRender.DrawPolygon(polygon, color)
-	app.Renderer.flatRender.DrawText(mouse, "skull is a smelly butt", 15, app.font, color)
+
+	//TODO: Capital W is fucked when rendering
+	app.Renderer.flatRender.DrawText(mouse, "spaghetti font test", 15, app.font, color)
 
 	//app.Renderer.DrawBox(n.NewRectangle(70, 70, mouse.X-70, mouse.Y-70), Point{3, 0}, app.boxWindow)
 	//app.Renderer.DrawRectangle(n.NewRectangle(70, 70, mouse.X-70, mouse.Y-70), color)
