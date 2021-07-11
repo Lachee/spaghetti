@@ -23,10 +23,11 @@ var (
 //Application handles the game. Put your variables in here
 type Application struct {
 	shader *n.Shader
-	bg     *Background
 
+	bg       *Background
 	Renderer *Renderer
 
+	font      *Font
 	boxWindow SliceWindow
 }
 
@@ -77,15 +78,14 @@ func (app *Application) Start() bool {
 	}
 
 	// Prepare font resource
-	fontResourceResult := <-FetchResource("resource://font/LobsterTwo-Regular.ttf")
-	if fontResourceResult.Error != nil {
-		n.Error("Failed to load the font", fontResourceResult.Error)
+	//font, err := LoadResourceFont("resource://font/LobsterTwo-Regular.ttf")
+	//font, err := LoadResourceFont("resource://font/BalsamiqSans-Regular.ttf")
+	font, err := LoadResourceFont("resource://font/ShareTechMono-Regular.ttf")
+	app.font = font
+	if err != nil {
+		n.Error("Failed to load the font", err)
 		return false
 	}
-
-	// Get the polygons
-	fontPaths := fontResourceResult.Data.Invoke("Hello World", 12)
-	log.Println(fontPaths)
 
 	// The mouse should trigger render events
 	n.MouseDraws = true
@@ -140,8 +140,17 @@ func (app *Application) Render() {
 	app.Renderer.DrawBox(n.NewRectangle(50, 50, 150, 150), Point{2, 0}, app.boxWindow)
 
 	mouse := GetUIMousePosition()
+	color := n.NewColorFromHSV(n.NewVector3(hue, 1, 1))
+	// polygon := []Vector2{
+	// 	{30, 40},
+	// 	{50, 60},
+	// 	{10, 20},
+	// }
+	//app.Renderer.flatRender.DrawPolygon(polygon, color)
+	app.Renderer.flatRender.DrawText(mouse, "spaghetti", 15, app.font, color)
+
 	//app.Renderer.DrawBox(n.NewRectangle(70, 70, mouse.X-70, mouse.Y-70), Point{3, 0}, app.boxWindow)
-	app.Renderer.DrawRectangle(n.NewRectangle(70, 70, mouse.X-70, mouse.Y-70), n.NewColorFromHSV(n.NewVector3(hue, 1, 1)))
+	//app.Renderer.DrawRectangle(n.NewRectangle(70, 70, mouse.X-70, mouse.Y-70), color)
 	// Finally render
 	app.Renderer.Render()
 

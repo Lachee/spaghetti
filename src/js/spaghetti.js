@@ -4,6 +4,7 @@ import './spaghetti.css'
 import '../../resources/bin/wasm_exec'
 import wasm from '../../resources/bin/spaghetti.wasm'
 import { fetchResource as fetchResource } from './resource';
+import earcut from 'earcut';
 
 
 
@@ -143,4 +144,5 @@ export class Editor {
             console.groupEnd("Resource " + resource);
         }
     }
+
 }

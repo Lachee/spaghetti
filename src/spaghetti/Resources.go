@@ -18,12 +18,22 @@ type ResourceResult struct {
 	Error    error
 }
 
-func LoadResourceFont(resource string) {
+func LoadResourceFont(resource string) (*Font, error) {
 	// TODO:
 	// 1. load the resource
 	// 2. invoke the data with the string and font size
 	// 3. result of invoke is polygon, use https://github.com/tchayen/triangolatte or https://github.com/mapbox/earcut
 	// 4. render the triangulated polygon
+	fontResource := <-FetchResource(resource)
+	if fontResource.Error != nil {
+		return nil, fontResource.Error
+	}
+
+	if !strings.HasPrefix(fontResource.MimeType, "font/") {
+		return nil, errors.New("Font resource has a invalid MimeType of " + fontResource.MimeType)
+	}
+
+	return &Font{font: fontResource.Data}, nil
 }
 
 //LoadResourceImage fetches the image from the given resource address. If the resource address is not an image, then an error will be thrown

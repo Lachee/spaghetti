@@ -83,6 +83,37 @@ func (render *FlatRender) DrawRectangle(rectangle Rectangle, color Color) {
 	)
 }
 
+func (render *FlatRender) DrawText(position Vector2, str string, size int, font *Font, color Color) {
+	indexOffset := uint16(len(render.vertices) / 4)
+	verts, indicies := font.Mesh(str, size)
+	tint := color.ToTint()
+
+	// Push Verts
+	for i := 0; i < len(verts); i += 2 {
+		render.vertices = append(render.vertices,
+			// Vertex, UV, Size, Offset
+			position.X+verts[i], position.Y+verts[i+1], 0, // 0 0 0
+			tint,
+		)
+	}
+
+	// Push indicies
+	for _, i := range indicies {
+		render.indicies = append(render.indicies, indexOffset+i)
+	}
+
+	/*
+		// Push indicies
+		for i := 0; i < len(indicies); i += 3 {
+			render.indicies = append(render.indicies,
+				indexOffset+indicies[i],
+				indexOffset+indicies[i+1],
+				indexOffset+indicies[i+2],
+			)
+		}
+	*/
+}
+
 //Render the buffered mesh
 func (render *FlatRender) Render() {
 

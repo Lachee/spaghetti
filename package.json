@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
+    "earcut": "^2.2.3",
     "opentype.js": "^1.3.3"
   }
 }

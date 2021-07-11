@@ -52,6 +52,8 @@ github.com/lachee/noodle v0.0.0-20210708143122-2a3d4b35a4bb h1:WGplfHwuy2C0znbju
 github.com/lachee/noodle v0.0.0-20210708143122-2a3d4b35a4bb/go.mod h1:C51O3zyzBtbm0YNES+K1WGWPzvx/OfAlBCGgRZuWdGA=
 github.com/lachee/noodle v0.0.0-20210709150822-feae78836116 h1:WhYIUHhrGDbjCO92e4TJWa1r2HMGSBv1g5Tz1JxQWzo=
 github.com/lachee/noodle v0.0.0-20210709150822-feae78836116/go.mod h1:C51O3zyzBtbm0YNES+K1WGWPzvx/OfAlBCGgRZuWdGA=
+github.com/lachee/noodle v0.0.0-20210711081414-950cbfca32bb h1:j8uvPF30JMrvhbKniKc1uaImgxkAoT6TwsWRJvis0js=
+github.com/lachee/noodle v0.0.0-20210711081414-950cbfca32bb/go.mod h1:C51O3zyzBtbm0YNES+K1WGWPzvx/OfAlBCGgRZuWdGA=
 github.com/tchayen/triangolatte v0.0.0-20210608212421-4964acf4b15b h1:2Jzr3VhMa1iMEvpNpk1aAJcvW2+ktNH3th8BGBpRJ70=
 github.com/tchayen/triangolatte v0.0.0-20210608212421-4964acf4b15b/go.mod h1:2EwgalDDpNRGoZwXq8AUpp/ZVCxHCwNEhVj37Q1tptI=
 golang.org/x/image v0.0.0-20210504121937-7319ad40d33e/go.mod h1:FeLwcggjj3mMvU+oOTbSwawSJRM1uh48EjtB4UJZlP0=

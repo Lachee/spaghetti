@@ -1,5 +1,5 @@
 import opentype from 'opentype.js';
-import { getPath as getFontPolygon } from './font';
+import { Font } from './font';
 
 // Load the resources
 export const ResourceProtocol = 'resource://';
@@ -25,10 +25,11 @@ const loaders = {
 }
 
 async function fontLoader(buff) {
+
     // It's already a buffer so lets just return the parsed font
     if (buff instanceof ArrayBuffer) {
         const font = opentype.parse(buff);
-        return (str, size) => getFontPolygon(font, str, size);
+        return new Font(font);
     }
 
     // It's a URI
@@ -37,7 +38,7 @@ async function fontLoader(buff) {
     return await new Promise((resolve, reject) => {
         opentype.load(uri, function(err, font) {
             if (err) return reject(err);         
-            return (str, size) => getFontPolygon(font, str, size);
+            resolve(new Font(font));
         });
     });
 }
