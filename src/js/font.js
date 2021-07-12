@@ -39,8 +39,9 @@ export class Font {
 
 const MAX_BEZIER_STEPS = 10;
 const BEZIER_STEP_SIZE = 3.0;
-const CURVE_RESOLUTION = 8;
+const CURVE_RESOLUTION = 2;
 const EPSILON = 1e-6;
+
 class FontBuilder {
     constructor(font) {
         this.font = font;
@@ -189,20 +190,17 @@ class Polygon {
 
     /** Pushes a bezier curve */
     pushBezier(cp1, cp2, endPoint) {
-
-        /*
         const p0 = this.lastPoint;
-        const dist = distance(p0, cp1) + distance(cp1, cp2) + distance(cp2, e);
+        const dist = distance(p0, cp1) + distance(cp1, cp2) + distance(cp2, endPoint);
         const steps = Math.max(2, Math.min(MAX_BEZIER_STEPS, dist / BEZIER_STEP_SIZE));
         for (let i = 1; i <= steps; ++i) {
           const t = i / steps;
           const a = lerp(lerp(p0, cp1, t), lerp(cp1, cp2, t), t);
-          const b = lerp(lerp(cp1, cp2, t), lerp(cp2, e, t), t);
+          const b = lerp(lerp(cp1, cp2, t), lerp(cp2, endPoint, t), t);
           this.push(lerp(a, b, t));
         }
-        */
 
-        
+        /*
         const s = this.lastPoint;
         const sx = s.x, sy = s.y;
         const ex = endPoint.x, ey = endPoint.y;
@@ -216,21 +214,20 @@ class Polygon {
                 y: Math.pow(1-t,3) * sy + 3 * t * Math.pow(1 - t, 2) * cp1y + 3 * t * t * (1 - t) * cp2y + t * t * t * ey
             });
         }
-        
+        */        
     }
 
     /** Pushes a quadratic coordinate */
     pushQuadratic(cp1, endPoint) {
-        /*
         const p0 = this.lastPoint;
-        const dist = distance(p0, cp1) + distance(cp1, e);
+        const dist = distance(p0, cp1) + distance(cp1, endPoint);
         const steps = Math.max(2, Math.min(MAX_BEZIER_STEPS, dist / BEZIER_STEP_SIZE));
         for (let i = 1; i <= steps; ++i) {
           const t = i / steps;
-          this.push(lerp(lerp(p0, cp1, t), lerp(cp1, e, t), t));
+          this.push(lerp(lerp(p0, cp1, t), lerp(cp1, endPoint, t), t));
         }
-        */
         
+        /*
         const s = this.lastPoint;
         const sx = s.x, sy = s.y;
         const ex = endPoint.x, ey = endPoint.y;
@@ -243,6 +240,7 @@ class Polygon {
                 y: (1-t) * (1-t) * sy + 2 * (1-t) * t * cp1y + t * t * ey
             });
         }
+        */
     }
 
     /** Closes the polygon */
@@ -253,6 +251,7 @@ class Polygon {
         //this.area += 0.5 * cross(cur, next);
         //  cur = next;
         //});
+        this.push(this.points[0]);
     }
 
     /** Checks if the polygon is within another polygon

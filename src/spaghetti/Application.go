@@ -78,8 +78,8 @@ func (app *Application) Start() bool {
 	}
 
 	// Prepare font resource
-	font, err := LoadResourceFont("resource://font/LobsterTwo-Regular.ttf")
-	//font, err := LoadResourceFont("resource://font/BalsamiqSans-Regular.ttf")
+	//font, err := LoadResourceFont("resource://font/LobsterTwo-Regular.ttf")
+	font, err := LoadResourceFont("resource://font/BalsamiqSans-Regular.ttf")
 	//font, err := LoadResourceFont("resource://font/ShareTechMono-Regular.ttf")
 	app.font = font
 	if err != nil {
@@ -148,8 +148,8 @@ func (app *Application) Render() {
 	// }
 	//app.Renderer.flatRender.DrawPolygon(polygon, color)
 
-	//TODO: Capital W is fucked when rendering
-	app.Renderer.flatRender.DrawText(mouse, "spaghetti font test", 15, app.font, color)
+	//TODO: "Welcome" is fucked by "welcome" is fine. "W" is also good.
+	app.Renderer.flatRender.DrawText(mouse, "spaghetti", 15, app.font, color)
 
 	//app.Renderer.DrawBox(n.NewRectangle(70, 70, mouse.X-70, mouse.Y-70), Point{3, 0}, app.boxWindow)
 	//app.Renderer.DrawRectangle(n.NewRectangle(70, 70, mouse.X-70, mouse.Y-70), color)

@@ -1,6 +1,8 @@
 package spaghetti
 
 import (
+	"errors"
+
 	n "github.com/lachee/noodle"
 )
 
@@ -122,6 +124,13 @@ func (render *FlatRender) Render() {
 		return
 	}
 
+	// Panic if uneven
+	if len(render.indicies)%3 != 0 {
+		err := errors.New("Invalid number of indicies")
+		n.Error("Invalid number of indicies", err)
+		return
+	}
+
 	// Setup material
 	render.setup()
 
@@ -133,6 +142,7 @@ func (render *FlatRender) Render() {
 	n.GL.BufferData(n.GlElementArrayBuffer, render.indicies, n.GlStaticDraw)
 
 	n.GL.DrawElements(n.GlTriangles, len(render.indicies), n.GlUnsignedShort, 0)
+	//n.GL.DrawElements(n.GlLines, len(render.indicies), n.GlUnsignedShort, 0)
 
 	// Clear the buffers
 	render.vertices = render.vertices[:0]
